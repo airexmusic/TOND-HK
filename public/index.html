@@ -1,35 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="theme-color" content="#4338ca" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOND HK</title>
-
-    <!-- Link to the manifest (The ID card) -->
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="shortcut icon" href="/oberoi.svg" />
-
-    <!-- Tailwind CSS -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4338ca">
+    
+    <!-- Libraries (No Build Step Required) -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Registration for the Service Worker (The Engine) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    
     <script>
-      if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("/sw.js")
-            .then((reg) => console.log("PWA Engine Active"))
-            .catch((err) => console.log("PWA Engine Error", err));
-        });
-      }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js');
+            });
+        }
     </script>
-  </head>
-  <body class="bg-slate-50">
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+</head>
+<body class="bg-slate-50">
     <div id="root"></div>
-  </body>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Firebase Configuration (Provided in your prompt)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDe21WoXt8XIA388kKEwU_PF9b8vNAwMmY",
+            authDomain: "team-housekeeping.firebaseapp.com",
+            projectId: "team-housekeeping",
+            storageBucket: "team-housekeeping.firebasestorage.app",
+            messagingSenderId: "85076102822",
+            appId: "1:85076102822:web:3a68a0c2e770aeee3bee67"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const ITEMS = ['Bath Soap', 'Shampoo', 'Slippers', 'Dental Kit', 'Tea Bags', 'Coffee'];
+
+        function App() {
+            const [user, setUser] = useState(null);
+            const [pin, setPin] = useState('');
+            const [counts, setCounts] = useState({});
+
+            useEffect(() => {
+                const unsub = db.collection('inventory').doc('current').onSnapshot(doc => {
+                    if (doc.exists) setCounts(doc.data());
+                });
+                return () => unsub();
+            }, []);
+
+            if (!user) return (
+                <div className="min-h-screen bg-indigo-700 flex items-center justify-center p-6">
+                    <div className="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl text-center">
+                        <img src="oberoi.svg" className="w-16 h-16 mx-auto mb-4" alt="Logo" />
+                        <h1 className="text-3xl font-bold text-indigo-700 mb-8">TOND HK</h1>
+                        <input type="password" value={pin} onChange={e=>setPin(e.target.value)} placeholder="Enter PIN" className="w-full p-4 mb-6 bg-slate-100 rounded-xl text-center text-2xl tracking-widest outline-none" />
+                        <button onClick={() => pin === '1234' || pin === '8888' ? setUser(true) : alert('Wrong PIN')} className="w-full bg-indigo-600 text-white p-4 rounded-xl font-bold shadow-lg">Login</button>
+                    </div>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen bg-slate-50">
+                    <nav className="bg-indigo-800 p-4 text-white font-bold flex justify-between shadow-md sticky top-0">
+                        <span>TOND HK</span>
+                        <button onClick={()=>setUser(null)} className="text-xs border px-2 py-1 rounded">Logout</button>
+                    </nav>
+                    <div className="p-4 max-w-md mx-auto space-y-4">
+                        <div className="bg-white p-4 rounded-2xl shadow-sm border mb-2">
+                           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Live Inventory</p>
+                        </div>
+                        {ITEMS.map(item => (
+                            <div key={item} className="bg-white p-4 rounded-2xl shadow-sm border flex justify-between items-center animate-in slide-in-from-bottom-2">
+                                <span className="font-medium text-slate-700">{item}</span>
+                                <div className="flex items-center gap-4 bg-slate-50 px-3 py-1 rounded-lg border">
+                                    <button onClick={()=>db.collection('inventory').doc('current').set({[item]: (counts[item]||0)-1}, {merge:true})} className="text-2xl text-slate-400 p-1">-</button>
+                                    <span className="font-bold text-xl w-8 text-center">{counts[item] || 0}</span>
+                                    <button onClick={()=>db.collection('inventory').doc('current').set({[item]: (counts[item]||0)+1}, {merge:true})} className="text-2xl text-indigo-600 p-1">+</button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
 </html>
