@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#4338ca" />
+    <title>TOND HK</title>
+
+    <!-- Link to the manifest (The ID card) -->
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="shortcut icon" href="/oberoi.svg" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Registration for the Service Worker (The Engine) -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((reg) => console.log("PWA Engine Active"))
+            .catch((err) => console.log("PWA Engine Error", err));
+        });
+      }
+    </script>
+  </head>
+  <body class="bg-slate-50">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

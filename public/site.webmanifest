@@ -1,0 +1,18 @@
+{
+  "name": "TOND HK",
+  "short_name": "TOND HK",
+  "description": "Housekeeping Management System",
+  "id": "tond-hk-pwa-final",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4338ca",
+  "icons": [
+    {
+      "src": "oberoi.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
