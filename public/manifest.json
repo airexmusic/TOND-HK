@@ -1,26 +1,18 @@
 {
-  "id": "tond-hk-app",
   "name": "TOND HK",
   "short_name": "TOND HK",
-  "description": "Team Housekeeping Inventory Management",
-  "start_url": "/",
+  "description": "Housekeeping Management System",
+  "id": "tond-hk-github-v1",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4338ca",
-  "orientation": "portrait",
-  "scope": "/",
   "icons": [
     {
       "src": "oberoi.svg",
-      "sizes": "192x192 512x512",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "THK.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
